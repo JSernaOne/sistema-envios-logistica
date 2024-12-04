@@ -7,10 +7,7 @@ import com.envios.repository.ClienteRepository;
 import com.envios.service.ClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
@@ -25,4 +22,18 @@ public class ApiRestCliente {
         return clienteService.crear(clienteDTO.toEntity());
     }
 
+    @PostMapping(path="/buscarCliente/{cc}")
+    public Cliente buscarCliente(@PathVariable Integer cc) {
+        return clienteService.buscar(cc);
+    }
+
+    @DeleteMapping(path="/eliminarCliente/{cc}")
+    public void eliminarCliente(@PathVariable Integer cc) {
+        clienteService.eliminar(cc);
+    }
+
+    @PutMapping(path="/actualizarCliente")
+    public Cliente actualizarCliente(@RequestBody ClienteDTO clienteDTO) {
+        return clienteService.actualizar(clienteDTO.toEntity());
+    }
 }

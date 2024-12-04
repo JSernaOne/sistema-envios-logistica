@@ -1,38 +1,26 @@
 package com.envios.service;
 
-import com.envios.controller.ClienteDTO;
 import com.envios.entity.ClienteEntity;
 import com.envios.model.Cliente;
 import com.envios.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @Service
 public class ClienteService {
 
     private ClienteRepository clienteRepository;
-    private List<ClienteEntity> clientes;
-
-    @Autowired
-    public ClienteService(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
-        this.clientes = new ArrayList<>();
-    }
 
     public Cliente crear(Cliente cliente) {
 
-        if(cliente == null){
-           /* throw new ApiRequestException("El cliente no puede ser nulo ");*/
+        if (cliente == null) {
+            /* throw new ApiRequestException("El cliente no puede ser nulo ");*/
             System.out.println("El cliente no puede ser nulo");
 
         }
-        if(cliente.getCedula() == null || cliente.getApellido() == null || cliente.getNombre() == null){
-           /* throw new ApiRequestException("la cedula, el apellido o el nombre son invalidos");*/
+        if (cliente.getCedula() == null || cliente.getApellido() == null || cliente.getNombre() == null) {
+            /* throw new ApiRequestException("la cedula, el apellido o el nombre son invalidos");*/
             System.out.println("la cedula, el apellido o el nombre son invalidos");
         }
 
@@ -49,4 +37,44 @@ public class ClienteService {
         clienteRepository.save(clienteEntity);
         return cliente;
     }
+
+    public Cliente buscar(Integer cc) {
+        ClienteEntity clienteEntity = clienteRepository.findById(cc).orElse(null);
+        if (clienteEntity == null) {
+            return null;
+        }
+        return Cliente.builder()
+                .cedula(clienteEntity.getCedula())
+                .nombre(clienteEntity.getNombre())
+                .apellido(clienteEntity.getApellido())
+                .celular(clienteEntity.getCelular())
+                .email(clienteEntity.getEmail())
+                .dirResidencia(clienteEntity.getDirResidencia())
+                .ciudad(clienteEntity.getCiudad())
+                .build();
+    }
+
+    public Cliente actualizar(Cliente cliente) {
+        ClienteEntity clienteEntity = clienteRepository.findById(cliente.getCedula()).orElse(null);
+        if (clienteEntity == null) {
+            return null;
+        }
+        clienteEntity.setNombre(cliente.getNombre());
+        clienteEntity.setApellido(cliente.getApellido());
+        clienteEntity.setCelular(cliente.getCelular());
+        clienteEntity.setEmail(cliente.getEmail());
+        clienteEntity.setDirResidencia(cliente.getDirResidencia());
+        clienteEntity.setCiudad(cliente.getCiudad());
+        clienteRepository.save(clienteEntity);
+        return cliente;
+    }
+
+    public void eliminar(Integer cc) {
+        ClienteEntity clienteEntity = clienteRepository.findById(cc).orElse(null);
+        if (clienteEntity == null) {
+            return;
+        }
+        clienteRepository.delete(clienteEntity);
+    }
+
 }
